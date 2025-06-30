@@ -10,6 +10,10 @@ bool do_execute_main_task = false; // this variable will be toggled via the user
                                    // decides whether to execute the main task or not
 bool do_reset_all_once = false;    // this variable is used to reset certain variables and objects and
                                    // shows how you can run a code segment only once
+// ir distance sensor
+float ir_distance_mV = 0.0f;; // define a variable to store measurement in (mV)
+AnalogIn ir_analog_in(PC_2);// Create analogIn object to read in the infrared distance sensor maped 0-0, 3.3V-1
+
 
 // objects for user button (blue button) handling on nucleo board
 DebounceIn user_button(BUTTON1);   // create DebounceIn to evaluate the user button
@@ -45,6 +49,8 @@ int main()
         main_task_timer.reset();
 
         if (do_execute_main_task) {
+            //read analog input
+            ir_distance_mV = 1.0e3f*ir_analog_in.read()*3.3f;
 
             // visual feedback that the main task is executed, setting this once would actually be enough
             led1 = 1;
@@ -55,7 +61,10 @@ int main()
 
                 // reset variables and objects
                 led1 = 0;
+                ir_distance_mV = 0.0f;
             }
+            printf("IR distance mV:%f\n",ir_distance_mV);
+
         }
 
         // toggling the user led
